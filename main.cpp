@@ -8,131 +8,125 @@ using namespace std;
 
 /* ===== Struktura krawędzi ===== */
 struct Krawedz {
-    int cel;  // Zmienna przechowująca numer wierzchołka, do którego prowadzi krawędź
-    explicit Krawedz(int c) : cel(c) {}  // Konstruktor, który ustawia cel krawędzi
+    int cel;
+    explicit Krawedz(int c) : cel(c) {}
 };
 
 /* ===== Funkcja DFS (Depth-First Search) ===== */
 void DFS(int start, const vector<vector<Krawedz>>& graf, vector<bool>& odw, int id) {
-    // Tworzymy stos, który będzie przechowywał wierzchołki do odwiedzenia
     stack<int> st;
-    st.push(start);  // Dodajemy wierzchołek startowy na stos
-    cout << "[Graf " << id << "] Start DFS od wierzcholka " << start << '\n';
+    st.push(start);
+    cout << "[Graf " << id << "] Start DFS od wierzcholka " << start << endl;
 
-    // Dopóki stos nie jest pusty, będziemy przetwarzać kolejne wierzchołki
     while (!st.empty()) {
-        int v = st.top();  // Pobieramy wierzchołek z góry stosu
-        st.pop();  // Usuwamy ten wierzchołek ze stosu
+        int v = st.top();
+        st.pop();
 
-        if (odw[v]) continue;  // Jeśli wierzchołek już odwiedziliśmy, pomijamy go
-        odw[v] = true;  // Oznaczamy wierzchołek jako odwiedzony
+        if (odw[v]) continue;
+        odw[v] = true;
 
-        cout << "[Graf " << id << "] Odwiedzono wierzcholek: " << v << '\n';
+        cout << "[Graf " << id << "] Odwiedzono wierzcholek: " << v << endl;
 
-        // Przechodzimy przez sąsiadów wierzchołka (w odwrotnej kolejności)
         for (auto it = graf[v].rbegin(); it != graf[v].rend(); ++it)
-            if (!odw[it->cel])  // Jeśli sąsiad nie był jeszcze odwiedzony
-                st.push(it->cel);  // Dodajemy go do stosu
+            if (!odw[it->cel])
+                st.push(it->cel);
     }
 
-    cout << "[Graf " << id << "] DFS ZAKONCZONE.\n";
+    cout << "[Graf " << id << "] DFS ZAKONCZONE." << endl;
 }
 
 /* ===== Funkcja dodająca krawędź do grafu ===== */
 bool dodajKrawedz(vector<vector<Krawedz>>& g, int a, int b) {
-    if (a == b) {  // Zapobieganie pętli (krawędź prowadząca do samego siebie)
-        cout << "  Krawedz " << a << " -> " << b << " odrzucona (petla).\n";
+    if (a == b) {
+        cout << "  Krawedz " << a << " -> " << b << " odrzucona (petla)." << endl;
         return false;
     }
-   
-    // Sprawdzamy, czy krawędź już istnieje w grafie
+
     for (const auto& k : g[a])
         if (k.cel == b) {
-            cout << "  Krawedz " << a << " - " << b << " juz istnieje. Pomijam.\n";
+            cout << "  Krawedz " << a << " - " << b << " juz istnieje. Pomijam." << endl;
             return false;
         }
 
-    // Dodajemy krawędź do grafu (dodajemy ją w obie strony, ponieważ graf jest nieskierowany)
-    g[a].push_back(Krawedz(b));  
+    g[a].push_back(Krawedz(b));
     g[b].push_back(Krawedz(a));
     return true;
 }
 
 /* ===== Funkcja wypisująca listę sąsiedztwa ===== */
 void wypisz(const vector<vector<Krawedz>>& g, int id) {
-    cout << "\n[Graf " << id << "] Lista sasiedztwa:\n";
-    for (size_t i = 0; i < g.size(); ++i) {  // Przechodzimy po wszystkich wierzchołkach
-        cout << ' ' << i << ": ";  // Wypisujemy numer wierzchołka
-        for (const auto& k : g[i])  // Dla każdego sąsiada wierzchołka
-            cout << k.cel << ' ';  // Wypisujemy numer sąsiada
-        cout << '\n';
+    cout << endl << "[Graf " << id << "] Lista sasiedztwa:" << endl;
+    for (size_t i = 0; i < g.size(); ++i) {
+        cout << ' ' << i << ": ";
+        for (const auto& k : g[i])
+            cout << k.cel << ' ';
+        cout << endl;
     }
 }
 
 /* ===== Funkcja wczytująca graf od użytkownika ===== */
 void wczytaj(vector<vector<Krawedz>>& g, int& start, int id) {
     int n, m;
-    cout << "\n[Graf " << id << "] Podaj liczbe wierzcholkow: ";
-    cin >> n;  // Liczba wierzchołków
+    cout << endl << "[Graf " << id << "] Podaj liczbe wierzcholkow: ";
+    cin >> n;
     cout << "[Graf " << id << "] Podaj liczbe krawedzi: ";
-    cin >> m;  // Liczba krawędzi
+    cin >> m;
 
-    g.assign(n, {});  // Inicjalizujemy graf jako pusty (graf o n wierzchołkach)
+    g.assign(n, {});
 
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    cout << "[Graf " << id << "] Podaj " << m << " krawedzi (np. 0 1):\n";
+    cout << "[Graf " << id << "] Podaj " << m << " krawedzi (np. 0 1):" << endl;
     int dodane = 0;
     string linia;
-    while (dodane < m) {  // Dopóki nie dodamy wszystkich krawędzi
+    while (dodane < m) {
         cout << "  [" << dodane + 1 << "/" << m << "]> ";
-        getline(cin, linia);  // Wczytujemy linię z danymi krawędzi
-        istringstream iss(linia);  // Tworzymy strumień wejściowy z tej linii
+        getline(cin, linia);
+        istringstream iss(linia);
 
         int a, b;
-        if (!(iss >> a >> b) || (iss >> ws && !iss.eof())) {  // Sprawdzamy poprawność formatu
-            cout << "  Nieprawidlowy format – wpisz dwie liczby.\n";
+        if (!(iss >> a >> b) || (iss >> ws && !iss.eof())) {
+            cout << "  Nieprawidlowy format – wpisz dwie liczby." << endl;
             continue;
         }
-        if (a < 0 || b < 0 || a >= n || b >= n) {  // Sprawdzamy, czy indeksy są w dozwolonym zakresie
-            cout << "  Indeksy poza zakresem 0-" << n - 1 << ".\n";
+        if (a < 0 || b < 0 || a >= n || b >= n) {
+            cout << "  Indeksy poza zakresem 0-" << n - 1 << "." << endl;
             continue;
         }
-        if (dodajKrawedz(g, a, b)) ++dodane;  // Dodajemy krawędź do grafu
+        if (dodajKrawedz(g, a, b)) ++dodane;
     }
 
-    // Wczytujemy wierzchołek startowy dla DFS
     do {
         cout << "[Graf " << id << "] Podaj wierzcholek startowy (0-" << n - 1 << "): ";
         cin >> start;
         if (start < 0 || start >= n)
-            cout << "  Nieprawidlowy wierzcholek startowy.\n";
+            cout << "  Nieprawidlowy wierzcholek startowy." << endl;
     } while (start < 0 || start >= n);
 }
 
 /* ===== Funkcja główna ===== */
 int main() {
-    ios::sync_with_stdio(false);  // Wyłączamy synchronizację I/O (dla szybszego działania)
-    cin.tie(nullptr);  // Zrywamy powiązanie między cin i cout, co poprawia wydajność
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-    vector<vector<Krawedz>> g1, g2;  // Dwa grafy
-    int s1, s2;  // Wierzchołki startowe dla dwóch grafów
+    vector<vector<Krawedz>> g1, g2;
+    int s1, s2;
 
-    wczytaj(g1, s1, 1);  // Wczytanie pierwszego grafu
-    wczytaj(g2, s2, 2);  // Wczytanie drugiego grafu
+    wczytaj(g1, s1, 1);
+    wczytaj(g2, s2, 2);
 
-    wypisz(g1, 1);  // Wypisanie listy sąsiedztwa pierwszego grafu
-    wypisz(g2, 2);  // Wypisanie listy sąsiedztwa drugiego grafu
+    wypisz(g1, 1);
+    wypisz(g2, 2);
 
-    vector<bool> odw1(g1.size(), false), odw2(g2.size(), false);  // Wektory odwiedzin dla dwóch grafów
+    vector<bool> odw1(g1.size(), false), odw2(g2.size(), false);
 
-    // Przeszukiwanie DFS dla obu grafów
-    cout << "\nRozpoczynamy DFS na grafie 1:\n";
+    cout << endl << "Rozpoczynamy DFS na grafie 1:" << endl;
     DFS(s1, g1, odw1, 1);
 
-    cout << "\nRozpoczynamy DFS na grafie 2:\n";
+    cout << endl << "Rozpoczynamy DFS na grafie 2:" << endl;
     DFS(s2, g2, odw2, 2);
 
-    cout << "\nWszystkie wątki DFS zakończone.\n";
+    cout << endl << "Wszystkie watki DFS zakonczone." << endl;
     return 0;
 }
+
