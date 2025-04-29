@@ -6,13 +6,11 @@
 
 using namespace std;
 
-/* ===== Struktura krawędzi ===== */
 struct Krawedz {
     int cel;
     explicit Krawedz(int c) : cel(c) {}
 };
 
-/* ===== Funkcja DFS (Depth-First Search) ===== */
 void DFS(int start, const vector<vector<Krawedz>>& graf, vector<bool>& odw, int id) {
     stack<int> st;
     st.push(start);
@@ -35,7 +33,6 @@ void DFS(int start, const vector<vector<Krawedz>>& graf, vector<bool>& odw, int 
     cout << "[Graf " << id << "] DFS ZAKONCZONE." << endl;
 }
 
-/* ===== Funkcja dodająca krawędź do grafu ===== */
 bool dodajKrawedz(vector<vector<Krawedz>>& g, int a, int b) {
     if (a == b) {
         cout << "  Krawedz " << a << " -> " << b << " odrzucona (petla)." << endl;
@@ -53,7 +50,6 @@ bool dodajKrawedz(vector<vector<Krawedz>>& g, int a, int b) {
     return true;
 }
 
-/* ===== Funkcja wypisująca listę sąsiedztwa ===== */
 void wypisz(const vector<vector<Krawedz>>& g, int id) {
     cout << endl << "[Graf " << id << "] Lista sasiedztwa:" << endl;
     for (size_t i = 0; i < g.size(); ++i) {
@@ -64,7 +60,6 @@ void wypisz(const vector<vector<Krawedz>>& g, int id) {
     }
 }
 
-/* ===== Funkcja wczytująca graf od użytkownika ===== */
 void wczytaj(vector<vector<Krawedz>>& g, int& start, int id) {
     int n, m;
     cout << endl << "[Graf " << id << "] Podaj liczbe wierzcholkow: ";
@@ -73,7 +68,6 @@ void wczytaj(vector<vector<Krawedz>>& g, int& start, int id) {
     cin >> m;
 
     g.assign(n, {});
-
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
     cout << "[Graf " << id << "] Podaj " << m << " krawedzi (np. 0 1):" << endl;
@@ -104,7 +98,6 @@ void wczytaj(vector<vector<Krawedz>>& g, int& start, int id) {
     } while (start < 0 || start >= n);
 }
 
-/* ===== Funkcja główna ===== */
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
